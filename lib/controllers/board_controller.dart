@@ -83,7 +83,7 @@ class BoardController extends GetxController {
       print("::::: response - body :::::");
       print(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         var utf8Decoded = utf8.decode(response.bodyBytes);
         var boardList = jsonDecode(utf8Decoded);
         for (var i = 0; i < boardList.length; i++) {
@@ -128,9 +128,33 @@ class BoardController extends GetxController {
     }
   }
 
+  Future<void> insert2() async {
+    try {
+      var response =
+          await _makeRequest(endpoint: "insert", method: "POST", body: {
+        'title': _titleController.text,
+        'writer': _writerController.text,
+        'content': _contentController.text,
+      });
+      print("::::: response - body :::::");
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        Get.snackbar("Success", "Board added successfully.");
+        fetchBoardList();
+      } else {
+        throw Exception("Failed to insert board.");
+      }
+    } catch (e) {
+      Get.snackbar("error", "failed to insert : $e");
+    }
+  }
+
   Future<void> insert() async {
     if (_formKey.currentState!.validate()) {
 //      var url = "http://10.0.2.2:8080/board/insert";
+      var url = "http://10.0.2.2:8080/board/insert";
+
       try {
         var response = await http.post(
           Uri.parse(url),
@@ -145,26 +169,16 @@ class BoardController extends GetxController {
         print(response.body);
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('게시글 등록 성공!'),
-              backgroundColor: Colors.blueAccent,
-            ),
-          );
-          Navigator.pushReplacementNamed(context, "/board/list");
+          Get.snackbar('성공', '게시글 등록 성공',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.blueAccent);
+          Get.offNamed('/board/list');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('게시글 등록 실패...'),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
+          Get.snackbar('실패', '게시글 등록 실패',
+              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
         }
       } catch (e) {
         print(e);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('에러: $e')),
-        );
       }
     }
   }
@@ -186,27 +200,17 @@ class BoardController extends GetxController {
           }),
         );
 
-        if (response.statusCode == 200 || response.statusCode == 204) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('게시글 수정 성공!'),
-              backgroundColor: Colors.blueAccent,
-            ),
-          );
-          Navigator.pushReplacementNamed(context, "/board/list");
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Get.snackbar('성공', '게시글 수정 성공',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.blueAccent);
+          Get.offNamed("/board/list");
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('게시글 수정 실패...'),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
+          Get.snackbar('실패', '게시글 수정 실패',
+              snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
         }
       } catch (e) {
         print(e);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('에러: $e')),
-        );
       }
     }
   }

@@ -6,8 +6,9 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ListScreen extends StatefulWidget {
-  const ListScreen({super.key});
-  final BoardController controller = Get.put(BoardController());
+  final BoardController controller = Get.find<BoardController>();
+
+  ListScreen({super.key});
   @override
   State<ListScreen> createState() => _ListScreenState();
 }
