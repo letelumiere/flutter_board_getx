@@ -12,13 +12,8 @@ class UpdateScreen extends StatefulWidget {
 }
 
 class _UpdateScreenState extends State<UpdateScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _writerController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
   BoardController controller = Get.find<BoardController>();
-
-  late int no;
+  int? no;
 
   final List<PopupMenuEntry<String>> _popupMenuItems = [
     const PopupMenuItem<String>(
@@ -39,7 +34,10 @@ class _UpdateScreenState extends State<UpdateScreen> {
     final arguments = ModalRoute.of(context)!.settings.arguments;
     if (arguments != null) {
       no = arguments as int;
-      controller.getBoard(no); // 이름 변경된 메서드 호출
+      if (no != null) {
+//      controller.getBoard(no); // 이름 변경된 메서드 호출
+        controller.getBoard2(no!); // 이름 변경된 메서드 호출
+      }
     }
   }
 
@@ -58,11 +56,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
               if (value == 'delete') {
                 bool check = await _showDeleteConfirmDialog();
                 if (check) {
-                  controller.deleteBoard(no).then((result) {
+                  controller.deleteBoard(no!).then((result) {
                     if (result) {
-                      Navigator.pop(context);
-                      Navigator.pushReplacementNamed(context, "/board/list");
-//                      Get.toNamed("/board/list");
+//                      Navigator.pop(context);
+//                    Navigator.pushReplacementNamed(context, "/board/list");
+                      Get.offNamed("/board/list");
                     }
                   });
                 }
@@ -74,12 +72,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: controller.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _titleController,
+                controller: controller.titleController,
                 decoration: const InputDecoration(labelText: '제목'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -89,7 +87,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                 },
               ),
               TextFormField(
-                controller: _writerController,
+                controller: controller.writerController,
                 decoration: const InputDecoration(labelText: '작성자'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -99,7 +97,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                 },
               ),
               TextFormField(
-                controller: _contentController,
+                controller: controller.contentController,
                 decoration: const InputDecoration(labelText: '내용'),
                 maxLines: 5,
                 validator: (value) {
@@ -119,7 +117,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         child: Center(
           child: ElevatedButton(
             onPressed: () {
-              controller.updateBoard();
+              controller.updateBoard(no!); //view에서의 파라미터를 추가
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50), // 가로 100% 버튼
@@ -148,13 +146,15 @@ class _UpdateScreenState extends State<UpdateScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // 취소를 클릭하면 false 반환
+//                Navigator.of(context).pop(false); // 취소를 클릭하면 false 반환
+                Get.back(result: false);
               },
               child: Text('취소'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // 삭제를 클릭하면 true 반환
+//                Navigator.of(context).pop(true); // 삭제를 클릭하면 true 반환
+                Get.back(result: true);
               },
               child: Text('삭제'),
             ),

@@ -69,13 +69,15 @@ class _ReadScreenState extends State<ReadScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // 취소를 클릭하면 false 반환
+//                Navigator.of(context).pop(false); // 취소를 클릭하면 false 반환
+                Get.back(result: false);
               },
               child: Text('취소'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // 삭제를 클릭하면 true 반환
+//                Navigator.of(context).pop(true); // 삭제를 클릭하면 true 반환
+                Get.back(result: true);
               },
               child: Text('삭제'),
             ),
@@ -102,18 +104,23 @@ class _ReadScreenState extends State<ReadScreen> {
             icon: const Icon(Icons.more_vert),
             onSelected: (String value) async {
               if (value == 'update') {
+/*
                 Navigator.pushReplacementNamed(
                   context,
                   "/board/update",
                   arguments: no,
                 );
+*/
+                Get.offNamed("/board/update", arguments: no);
               } else if (value == 'delete') {
                 bool check = await _showDeleteConfirmDialog();
                 if (check) {
                   controller.deleteBoard(no).then((result) {
                     if (result) {
-                      Navigator.pop(context);
-                      Navigator.pushReplacementNamed(context, "/board/list");
+                      //하나의 화면을 대체하는 동작
+//                      Navigator.pop(context);
+//                      Navigator.pushReplacementNamed(context, "/board/list");
+                      Get.offNamed("/board/list");
                     }
                   });
                 }

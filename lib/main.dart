@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_board_getx/controllers/board_controller.dart';
 import 'package:flutter_board_getx/main_screen.dart';
 import 'package:flutter_board_getx/views/insert_screen.dart';
 import 'package:flutter_board_getx/views/read_screen.dart';
@@ -7,6 +8,9 @@ import 'package:flutter_board_getx/views/update_screen.dart';
 import 'package:get/get.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Get.put(BoardController());
   runApp(const MyApp());
 }
 

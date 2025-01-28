@@ -12,10 +12,6 @@ class InsertScreen extends StatefulWidget {
 }
 
 class _InsertScreenState extends State<InsertScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _writerController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
   BoardController controller = Get.find<BoardController>();
 
   @override
@@ -27,12 +23,12 @@ class _InsertScreenState extends State<InsertScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: controller.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _titleController,
+                controller: controller.titleController,
                 decoration: const InputDecoration(labelText: '제목'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -42,7 +38,7 @@ class _InsertScreenState extends State<InsertScreen> {
                 },
               ),
               TextFormField(
-                controller: _writerController,
+                controller: controller.writerController,
                 decoration: const InputDecoration(labelText: '작성자'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -52,7 +48,7 @@ class _InsertScreenState extends State<InsertScreen> {
                 },
               ),
               TextFormField(
-                controller: _contentController,
+                controller: controller.contentController,
                 decoration: const InputDecoration(labelText: '내용'),
                 maxLines: 5,
                 validator: (value) {

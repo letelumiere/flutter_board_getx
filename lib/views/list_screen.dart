@@ -156,13 +156,15 @@ class _ListScreenState extends State<ListScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // 취소를 클릭하면 false 반환
+//                Navigator.of(context).pop(false); // 취소를 클릭하면 false 반환
+                Get.back(result: false);
               },
               child: const Text('취소'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true); // 삭제를 클릭하면 true 반환
+                Get.back(result: true);
               },
               child: const Text('삭제'),
             ),

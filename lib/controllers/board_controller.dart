@@ -2,23 +2,28 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_board_getx/models/board.dart';
 import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 class BoardController extends GetxController {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController writerController = TextEditingController();
+  final TextEditingController contentController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   final RxList<Board> boardList = <Board>[].obs;
 
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _writerController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
   final String baseUrl = "http://localhost:8080/board";
 //    var url = "http://10.0.2.2:8080/board/$no";
 
   late int no;
+
+  @override
+  void onClose() {
+    titleController.dispose();
+    writerController.dispose();
+    contentController.dispose();
+    super.onClose();
+  }
 
   //공통 HTTP 요청 메서드
   Future<http.Response> _makeRequest({
@@ -61,9 +66,9 @@ class BoardController extends GetxController {
         var utf8Decoded = utf8.decode(response.bodyBytes);
         var boardJson = jsonDecode(utf8Decoded);
 
-        _titleController.text = boardJson['title'];
-        _writerController.text = boardJson['writer'];
-        _contentController.text = boardJson['content'];
+        titleController.text = boardJson['title'];
+        writerController.text = boardJson['writer'];
+        contentController.text = boardJson['content'];
       } else {
         throw Exception('Failed to load board details');
       }
@@ -157,9 +162,9 @@ class BoardController extends GetxController {
     try {
       var response =
           await _makeRequest(endpoint: "insert", method: "POST", body: {
-        'title': _titleController.text,
-        'writer': _writerController.text,
-        'content': _contentController.text,
+        'title': titleController.text,
+        'writer': writerController.text,
+        'content': contentController.text,
       });
       print("::::: response - body :::::");
       print(response.body);
@@ -176,18 +181,18 @@ class BoardController extends GetxController {
   }
 
   Future<void> insert() async {
-    if (_formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate()) {
+      var url = "http://localhost:8080/board/insert";
 //      var url = "http://10.0.2.2:8080/board/insert";
-      var url = "http://10.0.2.2:8080/board/insert";
 
       try {
         var response = await http.post(
           Uri.parse(url),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
-            'title': _titleController.text,
-            'writer': _writerController.text,
-            'content': _contentController.text,
+            'title': titleController.text,
+            'writer': writerController.text,
+            'content': contentController.text,
           }),
         );
         print("::::: response - body :::::");
@@ -209,8 +214,10 @@ class BoardController extends GetxController {
   }
 
   /// 게시글 수정 요청
-  Future<void> updateBoard() async {
-    if (_formKey.currentState!.validate()) {
+  Future<void> updateBoard(int no) async {
+    //기존의 경우, view에서 사용하는 메서드이므로 파라미터가 필요 없었으나, getX에선 Controller에서 메서드를 관리하므로 매개변수 추가
+    //또한, 제목, 작성자 명칭은 업뎃이 안되는 분야인데, 이건 그냥 생략한다. 어차피 연습용 프로젝트라
+    if (formKey.currentState!.validate()) {
 //      var url = "http://10.0.2.2:8080/board/update";
       var url = "http://localhost:8080/board/update";
       try {
@@ -219,9 +226,9 @@ class BoardController extends GetxController {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
             'no': no,
-            'title': _titleController.text,
-            'writer': _writerController.text,
-            'content': _contentController.text,
+            'title': titleController.text,
+            'writer': writerController.text,
+            'content': contentController.text,
           }),
         );
 
