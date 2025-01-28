@@ -6,20 +6,19 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ListScreen extends StatefulWidget {
-  final BoardController controller = Get.find<BoardController>();
-
-  ListScreen({super.key});
+  const ListScreen({super.key});
   @override
   State<ListScreen> createState() => _ListScreenState();
 }
 
 class _ListScreenState extends State<ListScreen> {
+  BoardController controller = Get.put(BoardController());
   List<Board> _boardList = [];
 
   @override
   void initState() {
     super.initState();
-    getBoardList().then((result) {
+    controller.getBoardList().then((result) {
       setState(() {
         _boardList = result;
       });
@@ -70,11 +69,15 @@ class _ListScreenState extends State<ListScreen> {
                     },
                     onSelected: (String value) async {
                       if (value == 'update') {
+                        /*
                         Navigator.pushNamed(
                           context,
                           "/board/update",
                           arguments: _boardList[index].no,
                         );
+                        */
+                        Get.toNamed("board/update",
+                            arguments: _boardList[index].no);
                       } else if (value == 'delete') {
                         bool check = await _showDeleteConfirmDialog();
                         if (check) {
@@ -92,8 +95,14 @@ class _ListScreenState extends State<ListScreen> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(
-                  context,
+                /*수정 전 코드
+                  Navigator.pushNamed(
+                    context,
+                    "/board/read",
+                    arguments: _boardList[index].no,
+                );
+                */
+                Get.toNamed(
                   "/board/read",
                   arguments: _boardList[index].no,
                 );
@@ -104,7 +113,8 @@ class _ListScreenState extends State<ListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushReplacementNamed(context, "/board/insert");
+          //Navigator.pushReplacementNamed(context, "/board/insert");
+          Get.offNamed("/board/insert");
         },
         child: const Icon(Icons.create),
       ),

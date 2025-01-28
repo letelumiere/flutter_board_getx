@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_board_getx/controllers/board_controller.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class UpdateScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _writerController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  BoardController controller = Get.find<BoardController>();
 
   late int no;
 
@@ -36,7 +39,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
     final arguments = ModalRoute.of(context)!.settings.arguments;
     if (arguments != null) {
       no = arguments as int;
-      getBoard(no); // 이름 변경된 메서드 호출
+      controller.getBoard(no); // 이름 변경된 메서드 호출
     }
   }
 
@@ -55,10 +58,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
               if (value == 'delete') {
                 bool check = await _showDeleteConfirmDialog();
                 if (check) {
-                  deleteBoard(no).then((result) {
+                  controller.deleteBoard(no).then((result) {
                     if (result) {
                       Navigator.pop(context);
                       Navigator.pushReplacementNamed(context, "/board/list");
+//                      Get.toNamed("/board/list");
                     }
                   });
                 }
@@ -115,7 +119,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         child: Center(
           child: ElevatedButton(
             onPressed: () {
-              updateBoard();
+              controller.updateBoard();
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50), // 가로 100% 버튼

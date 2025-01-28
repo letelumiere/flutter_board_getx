@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_board_getx/controllers/board_controller.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_board_getx/models/board.dart';
 
@@ -11,6 +13,8 @@ class ReadScreen extends StatefulWidget {
 }
 
 class _ReadScreenState extends State<ReadScreen> {
+  BoardController controller = Get.find<BoardController>();
+
   late int no;
   late Future<Board> _board;
 
@@ -43,7 +47,7 @@ class _ReadScreenState extends State<ReadScreen> {
     final arguments = ModalRoute.of(context)!.settings.arguments;
     if (arguments != null) {
       no = arguments as int;
-      _board = getBoard(no);
+      _board = controller.getBoard2(no);
     } else {
       // 기본값 설정 또는 예외 처리
       no = 0;
@@ -106,7 +110,7 @@ class _ReadScreenState extends State<ReadScreen> {
               } else if (value == 'delete') {
                 bool check = await _showDeleteConfirmDialog();
                 if (check) {
-                  deleteBoard(no).then((result) {
+                  controller.deleteBoard(no).then((result) {
                     if (result) {
                       Navigator.pop(context);
                       Navigator.pushReplacementNamed(context, "/board/list");

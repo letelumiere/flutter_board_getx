@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_board_getx/controllers/board_controller.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class InsertScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class _InsertScreenState extends State<InsertScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _writerController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  BoardController controller = Get.find<BoardController>();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class _InsertScreenState extends State<InsertScreen> {
         child: Center(
           child: ElevatedButton(
             onPressed: () {
-              insert();
+              controller.insert();
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50), // 가로 100% 버튼

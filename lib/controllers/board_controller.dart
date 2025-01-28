@@ -72,6 +72,31 @@ class BoardController extends GetxController {
     }
   }
 
+  Future<Board> getBoard2(int no) async {
+//    var url = "http://10.0.2.2:8080/board/$no";
+    var url = "http://localhost:8080/board/read/$no";
+
+    try {
+      var response = await http.get(Uri.parse(url));
+      print("::::: response - body :::::");
+      print(response.body);
+      // UTF-8 디코딩
+      var utf8Decoded = utf8.decode(response.bodyBytes);
+      // JSON 디코딩
+      var boardJson = jsonDecode(utf8Decoded);
+      print(boardJson);
+      return Board(
+        no: boardJson['no'],
+        title: boardJson['title'],
+        writer: boardJson['writer'],
+        content: boardJson['content'],
+      );
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to load board');
+    }
+  }
+
   //
   // 🌞 게시글 목록 데이터 요청
   //
